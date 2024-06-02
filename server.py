@@ -3,17 +3,14 @@ import argparse
 import uvicorn
 from fastapi import FastAPI, HTTPException, status, Query
 from fastapi.exceptions import RequestValidationError
-from pydantic import BaseModel, Field
-from requests import Request
+from pydantic import BaseModel
 from starlette.responses import JSONResponse
 
-from config import TRAIN_DATA_FILE_PATH, API_KEY, MODEL_NAME
-from finetune_model import FineTuneModel
-from intent_classifier import IntentClassifier
-from utiils import read_data
+from configurations.config import TRAIN_DATA_FILE_PATH, API_KEY, MODEL_NAME, TEST_DATA_FILE_PATH, EVAL_FLAG
+from endpoints.intent_classifier import IntentClassifier
+from configurations.utils import read_data
 
 app = FastAPI()
-model = IntentClassifier()
 
 
 class TextRequest(BaseModel):
@@ -22,46 +19,54 @@ class TextRequest(BaseModel):
 
 
 @app.get('/ready')
-def ready():
+def ready(model_name: str = Query(default=None)):
     """
     Check if the model is ready.
 
     Returns:
         A JSON response indicating status.
     """
+    if not model_name:
+        model_name = MODEL_NAME
 
+    model = IntentClassifier(model_name, API_KEY)
     if model.is_ready():
         return {'status': 'OK'}
     else:
         raise HTTPException(status_code=423, detail='Not ready')
 
 
+
+
 @app.post('/intent')
-def intent():
+def intent(request: TextRequest, model_name: str = Query(default=None)):
     """
-    Endpoint for classifying the intent of a text message.
-    Request body should be a json object with a single key 'text' containing the text message to classify.
-    Response will be a json object with a single key 'intents' containing a list of labels.
-    """
-    # Implement this function according to the given API documentation
-    pass
+        Endpoint for classifying the intent of a text message.
+        Request body should be a json object with a single key 'text' containing the text message to classify.
+        Response will be a json object with a single key 'intents' containing a list of labels.
+        """
 
-
-@app.post('/finetune')
-def finetune_model(request: TextRequest, model_name: str = Query(default=None)):
 
     # Get Default Value
     if not model_name:
         model_name = MODEL_NAME
 
-    trainmodel = FineTuneModel(model_name, API_KEY)
-
+    trainmodel = IntentClassifier(model_name, API_KEY)
     train_data = read_data(TRAIN_DATA_FILE_PATH)
-    chunked_templates = trainmodel.create_templates(train_data, chunk_size=100)
+    chunked_templates = trainmodel.create_templates(train_data, chunk_size=200)
+
+
+    if EVAL_FLAG == 1:
+        test_data = read_data(TEST_DATA_FILE_PATH)
+        evaluation_metrics = trainmodel.evaluate_model(test_data, chunked_templates)
+        return {"evaluation_metrics": evaluation_metrics}
+
 
     res = trainmodel.classify_inputs(request.text, chunked_templates)
 
     return {"intents": res}
+
+
 
 
 @app.exception_handler(RequestValidationError)

@@ -1,0 +1,90 @@
+openapi: '3.0.0'
+info:
+  description: "API documentation for intent classification service."
+  version: "1.0.0"
+  title: "Intent Classification API"
+paths:
+  /intent:
+    post:
+      summary: "Classify intent from query utterance."
+      description: "Responds with intent classification results for the given query utterance."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
+                  example: "find me a flight that flies from memphis to tacoma"
+      parameters:
+        - in: query
+          name: model_name
+          description: "Name of the model to use for classification."
+          schema:
+            type: string
+          example: "gpt-3.5-turbo"
+      responses:
+        '200':
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  intents:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Prediction"
+              example:
+                intents:
+                  - label: "flight"
+                  - label: "aircraft"
+                  - label: "capacity"
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                BodyMissing:
+                  value:
+                    label: "BODY_MISSING"
+                    message: "Request doesn't have a body."
+                TextMissing:
+                  value:
+                    label: "TEXT_MISSING"
+                    message: "\"text\" missing from request body."
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                InternalError:
+                  value:
+                    label: "INTERNAL_ERROR"
+                    message: "<ERROR_MESSAGE>"
+
+components:
+  schemas:
+    Prediction:
+      type: object
+      properties:
+        label:
+          type: string
+          description: "Intent label name"
+    Error:
+      type: object
+      properties:
+        label:
+          type: string
+          description: "Error label"
+        message:
+          type: string
+          description: "Human-readable error message"
