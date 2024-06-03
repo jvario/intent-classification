@@ -52,6 +52,7 @@ The techniques used in this implementation include the use of Langchain with chu
 This table represents the evaluation results for modelgpt-3.5-turbo based on dataset. The metrics include Accuracy, Precision.
 
 # IV. Conclusion:
-As a result, we can observe that GPT-3.5-turbo achieves an accuracy of approximately 86%, with precision and recall scores of 0.85 and 0.86, respectively. This indicates that GPT-3.5-turbo has very good accuracy. Additionally, its performance is superior in some cases where the intent labels are not well-formatted, making exact matches with the true labels challenging. Moreover, the response time is around 5 seconds, demonstrating its efficiency in processing.## License
+As a result, we can observe that GPT-3.5-turbo achieves an accuracy of approximately 86%, with precision and recall scores of 0.85 and 0.86, respectively. This indicates that GPT-3.5-turbo has very good accuracy. Additionally, its performance is superior in some cases where the intent labels are not well-formatted, making exact matches with the true labels challenging. Moreover, the response time is around 5 seconds, demonstrating its efficiency in processing.
 
+## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
