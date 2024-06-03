@@ -5,5 +5,4 @@ langchain
 openai
 langchain-core
 langchain-community
-collections
 scikit-learn

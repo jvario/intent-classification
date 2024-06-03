@@ -115,10 +115,10 @@ class IntentClassifier:
            recall, and F1 score as evaluation metrics.
         """
 
-        y_true = [item['intent'] for item in test_data[:40]]
+        y_true = [item['intent'] for item in test_data[:300]]
         pred_list = []
         y_pred = []
-        for item in test_data[:40]:
+        for item in test_data[:300]:
             input_text = item['input']
             prediction = self.classify_inputs(input_text, chunked_templates)
             pred_list.append(prediction)
