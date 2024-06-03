@@ -31,7 +31,12 @@ You can find the dataset [here](https://www.kaggle.com/datasets/hassanamin/atis-
     docker run -d -p 8080:8080 my_fast_api
 
   #### api - calls
- - **/intent/?model_name='gpt-3.5-turbo'** :  calling the intent classifier (model_name is optional)
+ - **/intent/?model_name='gpt-3.5-turbo'** :  calling the intent classifier (model_name is optional, body "text" is required)
+    
+  ***example:*** ```{"text" : "find me a flight that flies from memphis to tacoma, and which aircraft?" }```
+
+
+
 # II.  Pipeline:
 
 #### Intent Classifier:
