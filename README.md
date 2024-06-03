@@ -24,7 +24,7 @@ You can find the dataset [here](https://www.kaggle.com/datasets/hassanamin/atis-
 
     # go to your home dir
     git clone https://github.com/jvario/intent-classification.git
-    cd intent-classifier
+    cd intent-classification
 
     # build the image
     docker build -t my_fast_api .
